@@ -36,10 +36,12 @@ package GUI;
 
 import BUS.NhanVien_BUS;
 import DTO.NhanVien_DTO;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -47,13 +49,19 @@ import javax.swing.table.DefaultTableModel;
  * @author Administrator
  */
 public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
-
+    
+    NhanVien_BUS nhanvienBUS = new NhanVien_BUS();
     /**
      * Creates new form pnQuanLyNguoiDung
      */
     public QuanLyNhanVien_GUI() {
         initComponents();
+        
         LoadAllNhanVien();
+        nhanvienBUS.getAllChucVuCBB(cbbMaChucVu);
+        getGiaTriCV();
+        
+        
     }
 
     /**
@@ -86,7 +94,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
         lbAnhNhanVien = new javax.swing.JLabel();
         lbMatKhau = new javax.swing.JLabel();
         btnThem = new javax.swing.JButton();
-        btnCapNha = new javax.swing.JButton();
+        btnCapNhat = new javax.swing.JButton();
         btnXoa = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         txfTimKiem = new javax.swing.JTextField();
@@ -94,6 +102,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
         btnTaiLai = new javax.swing.JButton();
         cbbMaChucVu = new javax.swing.JComboBox<>();
         txfMatKhau = new javax.swing.JTextField();
+        txfTenChucVu = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblNhanVien = new javax.swing.JTable();
 
@@ -112,14 +121,38 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
         lbMaChucVu.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         lbMaChucVu.setText("Mã chức vụ:");
 
+        txfTenTaiKhoan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfTenTaiKhoanKeyPressed(evt);
+            }
+        });
+
         lbTenTaiKhoan.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         lbTenTaiKhoan.setText("Tên tài khoản:");
 
         lbHoTen.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         lbHoTen.setText("Họ tên:");
 
+        txfHoTen.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfHoTenKeyPressed(evt);
+            }
+        });
+
+        txfDiaChi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfDiaChiKeyPressed(evt);
+            }
+        });
+
         lbDiaChi.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         lbDiaChi.setText("Địa chỉ:");
+
+        txfSDT.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfSDTKeyPressed(evt);
+            }
+        });
 
         lbSDT.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         lbSDT.setText("SDT:");
@@ -127,10 +160,26 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
         lbCMND.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         lbCMND.setText("CMND:");
 
+        txfCMND.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfCMNDKeyPressed(evt);
+            }
+        });
+
+        txfGioiTinh.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfGioiTinhKeyPressed(evt);
+            }
+        });
+
         lbGioiTinh.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
         lbGioiTinh.setText("Giới tính:");
 
-        txfMaNV.setEditable(false);
+        txfMaNV.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfMaNVKeyPressed(evt);
+            }
+        });
 
         AnhNhanVien.setBackground(new java.awt.Color(204, 255, 204));
         AnhNhanVien.setFont(new java.awt.Font("Dialog", 1, 16)); // NOI18N
@@ -152,9 +201,9 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
             }
         });
 
-        btnCapNha.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        btnCapNha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-update-left-rotation-27.png"))); // NOI18N
-        btnCapNha.setText("Cập nhật");
+        btnCapNhat.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        btnCapNhat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-update-left-rotation-27.png"))); // NOI18N
+        btnCapNhat.setText("Cập nhật");
 
         btnXoa.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         btnXoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-delete-27.png"))); // NOI18N
@@ -180,7 +229,24 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
             }
         });
 
-        cbbMaChucVu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbbMaChucVu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbbMaChucVuActionPerformed(evt);
+            }
+        });
+        cbbMaChucVu.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cbbMaChucVuKeyPressed(evt);
+            }
+        });
+
+        txfMatKhau.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txfMatKhauKeyPressed(evt);
+            }
+        });
+
+        txfTenChucVu.setEditable(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -222,17 +288,20 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
                                                 .addComponent(lbMaChucVu, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txfTenTaiKhoan, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                                    .addComponent(txfTenTaiKhoan)
                                     .addComponent(txfMaNV)
-                                    .addComponent(txfHoTen, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
-                                    .addComponent(cbbMaChucVu, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txfMatKhau, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE))))
+                                    .addComponent(txfHoTen)
+                                    .addComponent(txfMatKhau)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(cbbMaChucVu, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txfTenChucVu, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnCapNha)
+                                .addComponent(btnCapNhat)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(29, 29, 29))
@@ -261,9 +330,10 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(AnhNhanVien, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbMaChucVu, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                            .addComponent(cbbMaChucVu))
+                            .addComponent(cbbMaChucVu, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                            .addComponent(txfTenChucVu))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbTenTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -288,7 +358,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnCapNha)
+                        .addComponent(btnCapNhat)
                         .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -300,7 +370,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
                     .addComponent(txfGioiTinh, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txfTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -372,6 +442,64 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnTaiLaiActionPerformed
 
+    private void cbbMaChucVuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbMaChucVuActionPerformed
+        getGiaTriCV();
+    }//GEN-LAST:event_cbbMaChucVuActionPerformed
+
+    private void txfMaNVKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfMaNVKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            cbbMaChucVu.requestFocus();
+        }
+    }//GEN-LAST:event_txfMaNVKeyPressed
+
+    private void cbbMaChucVuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbbMaChucVuKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            focusInput(txfTenTaiKhoan);
+        }
+    }//GEN-LAST:event_cbbMaChucVuKeyPressed
+
+    private void txfTenTaiKhoanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfTenTaiKhoanKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            focusInput(txfMatKhau);
+        }
+    }//GEN-LAST:event_txfTenTaiKhoanKeyPressed
+
+    private void txfMatKhauKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfMatKhauKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            focusInput(txfHoTen);
+        }
+    }//GEN-LAST:event_txfMatKhauKeyPressed
+
+    private void txfHoTenKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfHoTenKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            focusInput(txfDiaChi);
+        }
+    }//GEN-LAST:event_txfHoTenKeyPressed
+
+    private void txfDiaChiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfDiaChiKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            focusInput(txfSDT);
+        }
+    }//GEN-LAST:event_txfDiaChiKeyPressed
+
+    private void txfCMNDKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfCMNDKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            focusInput(txfGioiTinh);
+        }
+    }//GEN-LAST:event_txfCMNDKeyPressed
+
+    private void txfSDTKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfSDTKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            focusInput(txfCMND);
+        }
+    }//GEN-LAST:event_txfSDTKeyPressed
+
+    private void txfGioiTinhKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txfGioiTinhKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn yêu cầu!");
+        }
+    }//GEN-LAST:event_txfGioiTinhKeyPressed
+
     private void LoadAllNhanVien(){
         ArrayList<NhanVien_DTO> nhanvienArr = new ArrayList<NhanVien_DTO>();
         DefaultTableModel modelNV = (DefaultTableModel)tblNhanVien.getModel();
@@ -407,47 +535,117 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
     }
     
     private void ThemNV(){
+        ArrayList<NhanVien_DTO> nhanvienArr = new ArrayList<NhanVien_DTO>();
         NhanVien_DTO nhanvienDTO = new NhanVien_DTO();
+        int getMaNV;
         
-        nhanvienDTO.setMaChucVu(cbbMaChucVu.getSelectedIndex());
-        nhanvienDTO.setTenTaiKhoanNV(txfTenTaiKhoan.getText());
-        nhanvienDTO.setMatKhauNV(txfMatKhau.getText());
-        nhanvienDTO.setHoTenNV(txfHoTen.getText());
-        nhanvienDTO.setDiaChiNV(txfDiaChi.getText());
-        nhanvienDTO.setSdtNV(txfSDT.getText());
-        nhanvienDTO.setCmndNV(txfCMND.getText());
-        nhanvienDTO.setGioiTinhNV(txfGioiTinh.getText());
-        //nhanvienDTO.setAnhNV(lblAnh.getText());
-        
-        
-        NhanVien_BUS nhanvienBUS = new NhanVien_BUS();
-        
-        try {
-            int result = nhanvienBUS.ThemNhanVien(nhanvienDTO);
-            
-            if (result != 0) {
-                JOptionPane.showMessageDialog(null,"Thêm nhân viên thành công!");
-            
-            }else JOptionPane.showMessageDialog(null,"Thêm nhân viên thất bại!");
-            
-            LoadAllNhanVien();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (txfMaNV.getText().isEmpty() == true){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập mã nhân viên!");
+            txfMaNV.requestFocus();
         }
-          
-        
-        
-     
+        else if (txfTenTaiKhoan.getText().isEmpty() == true){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập tên tài khoản!");
+            txfTenTaiKhoan.requestFocus();
+        }
+        else if (txfMatKhau.getText().isEmpty() == true){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập mật khẩu!");
+            txfMatKhau.requestFocus();
+        }
+        else if (txfHoTen.getText().isEmpty() == true){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập họ tên!");
+            txfHoTen.requestFocus();
+        }
+        else if (txfDiaChi.getText().isEmpty() == true){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập địa chỉ!");
+            txfDiaChi.requestFocus();
+        }
+        else if (txfSDT.getText().isEmpty() == true){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập SDT !");
+            txfSDT.requestFocus();
+        }
+        else if (txfCMND.getText().isEmpty() == true){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập CMND !");
+            txfCMND.requestFocus();
+        }
+        else if (txfGioiTinh.getText().isEmpty() == true){
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập giới tính !");
+            txfGioiTinh.requestFocus();
+        }else{
+            
+            try{
+                getMaNV = Integer.parseInt(txfMaNV.getText());
+            }catch(NumberFormatException e){ //Kiểm tra có phải số nguyên hay không
+                JOptionPane.showMessageDialog(null, "Mã nhân viên phải là số nguyên!");
+                txfMaNV.requestFocus();
+            }
+                    getMaNV = Integer.parseInt(txfMaNV.getText());
+                    nhanvienDTO.setMaNV(getMaNV);
+                    int cbbMaCV = Integer.parseInt((String) cbbMaChucVu.getSelectedItem());
+                    nhanvienDTO.setMaChucVu(cbbMaCV);
+                    nhanvienDTO.setTenTaiKhoanNV(txfTenTaiKhoan.getText());
+                    nhanvienDTO.setMatKhauNV(txfMatKhau.getText());
+                    nhanvienDTO.setHoTenNV(txfHoTen.getText());
+                    nhanvienDTO.setDiaChiNV(txfDiaChi.getText());
+                    nhanvienDTO.setSdtNV(txfSDT.getText());
+                    nhanvienDTO.setCmndNV(txfCMND.getText());
+                    nhanvienDTO.setGioiTinhNV(txfGioiTinh.getText());
+                    //nhanvienDTO.setAnhNV(lblAnh.getText());
+
+                    NhanVien_BUS nhanvienBUS = new NhanVien_BUS();
+
+                    try {
+                        int result = nhanvienBUS.ThemNhanVien(nhanvienDTO);
+
+                        if (result != 0) {
+                            JOptionPane.showMessageDialog(null,"Thêm nhân viên thành công!");
+
+                        }else {
+                            System.out.println("Thêm nhân viên thất bại!");
+                            JOptionPane.showMessageDialog(null,"Mã nhân viên đã tồn tại! VUi lòng nhập lại!"); //Chưa ràng buộc tên tài khoản
+                            txfMaNV.requestFocus();
+                        }
+
+
+                        LoadAllNhanVien();
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    
+        }
+ 
     }
     
+    private void getGiaTriCV(){
+       NhanVien_BUS nhanvienBUS = new NhanVien_BUS();
+       int cbbMaCV = Integer.parseInt((String) cbbMaChucVu.getSelectedItem());
+       
+       switch (cbbMaCV){
+           case 1: {               
+                String tenCV = nhanvienBUS.getTenChucVu(cbbMaCV);
+                txfTenChucVu.setText(tenCV);
+                break;
+           }
+           case 2: {
+               String tenCV = nhanvienBUS.getTenChucVu(cbbMaCV);
+               txfTenChucVu.setText(tenCV);
+               break;
+           }
+       }
+   
+   }
     
+    private void focusInput(JTextField nameTextField){
+        nameTextField.requestFocus();
+    }
+   
     
     
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AnhNhanVien;
-    private javax.swing.JButton btnCapNha;
+    private javax.swing.JButton btnCapNhat;
     private javax.swing.JButton btnTaiLai;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnTimKiem;
@@ -475,6 +673,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
     private javax.swing.JTextField txfMaNV;
     private javax.swing.JTextField txfMatKhau;
     private javax.swing.JTextField txfSDT;
+    private javax.swing.JTextField txfTenChucVu;
     private javax.swing.JTextField txfTenTaiKhoan;
     private javax.swing.JTextField txfTimKiem;
     // End of variables declaration//GEN-END:variables

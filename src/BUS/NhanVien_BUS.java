@@ -8,6 +8,7 @@ package BUS;
 import DAO.NhanVien_DAO;
 import DTO.NhanVien_DTO;
 import java.util.ArrayList;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -18,6 +19,15 @@ public class NhanVien_BUS {
     
     public ArrayList<NhanVien_DTO> getAllNhanVien() throws ClassNotFoundException{
         return nhanvienDAO.getAllNhanVien();
+    }
+    
+    public void getAllChucVuCBB(JComboBox cbbName){
+        nhanvienDAO.getAllChucVuCBB(cbbName);
+    }
+   
+    public String getTenChucVu(int maChucVu){
+        String getTenCV = nhanvienDAO.getTenChucVu(maChucVu);
+        return getTenCV;
     }
     
     public int ThemNhanVien(NhanVien_DTO nhanvienDTO){

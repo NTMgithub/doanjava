@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -70,10 +72,74 @@ public class NhanVien_DAO {
         return resultArray;
     }
     
-    public int ThemNhanVien(NhanVien_DTO nhanvienDTO){ //Chưa có chức năng thêm ảnh
+    public void getAllChucVuCBB(JComboBox cbbName){
+        String query = "SELECT * FROM tbl_chucvu";
+        
+        try{
+            xuLyDB = new XuLyDatabase_BUS();
+            connection = xuLyDB.openConnection();
+            
+            ps = connection.prepareStatement(query);
+            resultSet = ps.executeQuery();
+            while (resultSet.next()){
+                cbbName.addItem(resultSet.getString("maChucVu"));
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        //Dong ket noi
+        finally{
+            try{
+                xuLyDB.closeConnection(connection);
+                ps.close();
+                resultSet.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        
+    }
+    
+    public String getTenChucVu(int maChucVu){
+        String query = "SELECT * FROM tbl_chucvu";
+        
+        try{
+            xuLyDB = new XuLyDatabase_BUS();
+            connection = xuLyDB.openConnection();
+            
+            ps = connection.prepareStatement(query);
+            resultSet = ps.executeQuery();
+            while (resultSet.next()){
+                int maCV = resultSet.getInt("maChucVu");
+                if ( maCV == maChucVu){
+                    return resultSet.getString("tenChucVu");
+                }
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        //Dong ket noi
+        finally{
+            try{
+                xuLyDB.closeConnection(connection);
+                ps.close();
+                resultSet.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return null;
+        
+    }
+    
+    public int ThemNhanVien(NhanVien_DTO nhanvienDTO){ //Chưa có chức năng thêm ảnh      
         int result = 0;
-        String query = "INSERT INTO tbl_nhanvien(maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV) "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?) ";
+        String query = "INSERT INTO tbl_nhanvien(maNV, maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) ";
         
         try{
             xuLyDB = new XuLyDatabase_BUS();
@@ -84,14 +150,15 @@ public class NhanVien_DAO {
             }
             ps = connection.prepareStatement(query);
             
-            ps.setInt(1, nhanvienDTO.getMaChucVu());
-            ps.setString(2, nhanvienDTO.getTenTaiKhoanNV());
-            ps.setString(3, nhanvienDTO.getMatKhauNV());
-            ps.setString(4, nhanvienDTO.getHoTenNV());
-            ps.setString(5, nhanvienDTO.getDiaChiNV());
-            ps.setString(6, nhanvienDTO.getSdtNV());
-            ps.setString(7, nhanvienDTO.getCmndNV());
-            ps.setString(8, nhanvienDTO.getGioiTinhNV());
+            ps.setInt(1, nhanvienDTO.getMaNV());
+            ps.setInt(2, nhanvienDTO.getMaChucVu());
+            ps.setString(3, nhanvienDTO.getTenTaiKhoanNV());
+            ps.setString(4, nhanvienDTO.getMatKhauNV());
+            ps.setString(5, nhanvienDTO.getHoTenNV());
+            ps.setString(6, nhanvienDTO.getDiaChiNV());
+            ps.setString(7, nhanvienDTO.getSdtNV());
+            ps.setString(8, nhanvienDTO.getCmndNV());
+            ps.setString(9, nhanvienDTO.getGioiTinhNV());
 //            ps.setString(9, nhanvienDTO.getAnhNV());
             
             result = ps.executeUpdate();
@@ -105,7 +172,7 @@ public class NhanVien_DAO {
             try{
                 xuLyDB.closeConnection(connection);
                 ps.close();
-                resultSet.close();
+//                resultSet.close();
             }catch (SQLException e){
                 e.printStackTrace();
             }
