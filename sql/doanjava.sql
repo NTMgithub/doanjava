@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 23, 2020 at 07:03 PM
+-- Generation Time: May 24, 2020 at 07:54 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.3.18
 
@@ -111,7 +111,7 @@ CREATE TABLE `tbl_nhanvien` (
   `sdtNV` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `cmndNV` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `gioiTinhNV` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `anhNV` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+  `anhNV` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Ảnh ở đây'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -119,10 +119,20 @@ CREATE TABLE `tbl_nhanvien` (
 --
 
 INSERT INTO `tbl_nhanvien` (`maNV`, `maChucVu`, `tenTaiKhoanNV`, `matKhauNV`, `hoTenNV`, `diaChiNV`, `sdtNV`, `cmndNV`, `gioiTinhNV`, `anhNV`) VALUES
+(0, 1, 'thephong', '123', 'sakdsajd', 'ádasd', 'ádacac', 'ấccasc', 'ấccasc', 'Ảnh ở đây'),
 (2, 1, 'admin', 'admin', 'Nguyen Van Admin', 'Dia chi ne', '0913091049', '234234', '32432434', 'asdad'),
 (3, 1, 'thephong', '123', 'Nguyễn Thế Phong', 'Địa chỉ nè', 'SDT nè', 'CMND nè', 'Nam', 'Ảnh nè'),
 (4, 1, 'anhphi', '123', 'Lê Hồ Anh Phi', 'Dịa chỉ nè', 'SDT nè', 'CMND nè', 'Nam', 'Ảnh nè'),
-(5, 2, 'manager', '123', 'Manager', 'Dịa chỉ manager', 'sdt manager', 'cmnd manager', 'giói tính manager', 'ảnh manager');
+(5, 2, 'manager', '123', 'Manager', 'Dịa chỉ manager', 'sdt manager', 'cmnd manager', 'giói tính manager', 'ảnh manager'),
+(9, 1, 'sadasd', 'asdd', 'adasd', 'ad', 'sad', 'asd', 'sad', 'Ảnh ở đây'),
+(12, 1, 'managerr', '123', 'managerr', 'managerr', 'managerr', 'managerr', 'managerr', 'Ảnh ở đây'),
+(13, 1, 'manager3', 'manager3', 'manager3', 'manager3', 'manager3', 'manager3', 'manager3', 'Ảnh ở đây'),
+(14, 2, 'manager-test2', '123', 'manager-test2', 'manager-test2', 'manager-test2', 'manager-test2', 'manager-test2', 'Ảnh ở đây'),
+(15, 1, 'manager22', '123', 'manager22', 'manager22', 'manager22', 'manager22', 'manager22', 'Ảnh ở đây'),
+(78, 1, 'men1', '123', 'men1', 'men', 'men', 'en', 'men', 'Ảnh ở đây'),
+(79, 1, 'men2', '123', 'men2', 'men2', 'men2', 'men2', 'men2', 'Ảnh ở đây'),
+(234, 2, 'men', '123', 'men', 'men', 'men', 'men', 'men', 'Ảnh ở đây'),
+(345, 1, 'admin112', '123', 'admin112', 'admin112', 'admin112', 'admin112', 'admin112', 'Ảnh ở đây');
 
 -- --------------------------------------------------------
 
@@ -218,12 +228,6 @@ ALTER TABLE `tbl_khachhang`
 --
 ALTER TABLE `tbl_nhacungcap`
   MODIFY `maNCC` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tbl_nhanvien`
---
-ALTER TABLE `tbl_nhanvien`
-  MODIFY `maNV` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbl_sanpham`
