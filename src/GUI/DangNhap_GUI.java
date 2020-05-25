@@ -28,6 +28,10 @@ public class DangNhap_GUI extends javax.swing.JFrame {
      */
     public DangNhap_GUI() {
         initComponents();
+        
+        System.out.println(XuLyDatabase_BUS.checkTrangThaiLogin_BUS);
+        
+        
     }
 
     /**
@@ -293,12 +297,20 @@ public class DangNhap_GUI extends javax.swing.JFrame {
             }
             else{                
                 try{
+                    
                     dbBUS.LoginQuanTri(tenTaiKhoan, matKhau);
                     
+                    if (XuLyDatabase_BUS.checkTrangThaiLogin_BUS == 1){
+                        Admin_GUI frmAdmin = new Admin_GUI();
+                        frmAdmin.setVisible(true);
+                        this.setVisible(false);
+                    }
+                    
+     
                     txfTenTaiKhoan.requestFocus();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                }   
+                }
 
             }
     }
@@ -342,6 +354,7 @@ public class DangNhap_GUI extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
                public void run() {
                 new DangNhap_GUI().setVisible(true);
+                
             }
         });
     }

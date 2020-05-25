@@ -5,6 +5,8 @@
  */
 package DTO;
 
+import java.io.InputStream;
+
 /**
  *
  * @author mend
@@ -19,9 +21,9 @@ public class NhanVien_DTO {
     private String sdtNV;
     private String cmndNV;
     private String gioiTinhNV;
-    private String anhNV;
+    private byte[] anhNV;
     
-    public NhanVien_DTO(int maNV, int maChucVu, String tenTaiKhoanNV, String matKhauNV, String hoTenNV, String diaChiNV, String sdtNV, String cmndNV, String gioiTinhNV, String anhNV) {
+    public NhanVien_DTO(int maNV, int maChucVu, String tenTaiKhoanNV, String matKhauNV, String hoTenNV, String diaChiNV, String sdtNV, String cmndNV, String gioiTinhNV, byte[] anhNV) {
         this.maNV = maNV;
         this.maChucVu = maChucVu;
         this.tenTaiKhoanNV= tenTaiKhoanNV;
@@ -119,11 +121,11 @@ public class NhanVien_DTO {
         this.gioiTinhNV = gioiTinhNV;
     }
 
-    public String getAnhNV() {
+    public byte[] getAnhNV() {
         return anhNV;
     }
 
-    public void setAnhNV(String anhNV) {
+    public void setAnhNV(byte[] anhNV) {
         this.anhNV = anhNV;
     }
     

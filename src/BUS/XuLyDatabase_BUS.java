@@ -15,7 +15,9 @@ import java.sql.ResultSet;
  * @author Administrator
  */
 public class XuLyDatabase_BUS {
+    public static int checkTrangThaiLogin_BUS =  XuLyDatabase_DAO.checkTrangThaiLogin;
     XuLyDatabase_DAO xuLyDB = new XuLyDatabase_DAO();
+    
     
     public Connection openConnection() throws ClassNotFoundException{
         return xuLyDB.openConnection();

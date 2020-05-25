@@ -9,12 +9,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class XuLyDatabase_DAO {
     private static String dbURL = "jdbc:mysql://localhost:3306/doanjava";
     private static String userName = "root";
     private static String password = "";
     
+    public static int checkTrangThaiLogin = 0;
 //    public static Connection conn = null;
         
         //Start Hàm kết nối cơ sở dữ liệu
@@ -65,12 +67,9 @@ public class XuLyDatabase_DAO {
                     result = ps.executeQuery();
                     
                     if (result.next()){
+                        checkTrangThaiLogin = 1;
                         JOptionPane.showMessageDialog(null,"Đăng nhập thành công!");
-                        Admin_GUI frmAdmin = new Admin_GUI();
-                        DangNhap_GUI dnAdmin = new DangNhap_GUI();
-                        frmAdmin.setVisible(true);
-                        dnAdmin.setVisible(false);
-                        
+         
                     }else{
                         JOptionPane.showMessageDialog(null,"Sai thông tin đăng nhập! Mời nhập lại!");
 //                        txfTenTaiKhoan.requestFocus();
