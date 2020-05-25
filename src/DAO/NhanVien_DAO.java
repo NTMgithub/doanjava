@@ -7,6 +7,11 @@ package DAO;
 
 import BUS.XuLyDatabase_BUS;
 import DTO.NhanVien_DTO;
+import GUI.QuanLyNhanVien_GUI;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,7 +55,8 @@ public class NhanVien_DAO {
                 nhanvienDTO.setSdtNV(resultSet.getString("sdtNV"));
                 nhanvienDTO.setCmndNV(resultSet.getString("cmndNV"));
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
-                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
+                
+                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
                 
                 resultArray.add(nhanvienDTO);
             }
@@ -138,8 +144,8 @@ public class NhanVien_DAO {
     
     public int ThemNhanVien(NhanVien_DTO nhanvienDTO){ //Chưa có chức năng thêm ảnh      
         int result = 0;
-        String query = "INSERT INTO tbl_nhanvien(maNV, maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV) "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+        String query = "INSERT INTO tbl_nhanvien(maNV, maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV, anhNV) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
         
         try{
             xuLyDB = new XuLyDatabase_BUS();
@@ -159,12 +165,17 @@ public class NhanVien_DAO {
             ps.setString(7, nhanvienDTO.getSdtNV());
             ps.setString(8, nhanvienDTO.getCmndNV());
             ps.setString(9, nhanvienDTO.getGioiTinhNV());
-//            ps.setString(9, nhanvienDTO.getAnhNV());
             
+            
+            InputStream AnhNV = new FileInputStream(new File(QuanLyNhanVien_GUI.ImgPath));
+            ps.setBlob(10, AnhNV);
+         
             result = ps.executeUpdate();
    
         }catch (SQLException e){
             e.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         //Dong ket noi
