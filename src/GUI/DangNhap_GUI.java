@@ -6,8 +6,7 @@
 
 package GUI;
 
-
-import BUS.XuLyDatabase_BUS;
+import BUS.NhanVien_BUS;
 import GUI.Admin_GUI;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -17,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 /**
  *
@@ -26,11 +26,13 @@ public class DangNhap_GUI extends javax.swing.JFrame {
     /**
      * Creates new form LoginAdmin
      */
+    public static String hoTenOnline;
+    public static int maNVOnline;
+    
+    int mousepX;
+    int mousepY;
     public DangNhap_GUI() {
         initComponents();
-        
-        System.out.println(XuLyDatabase_BUS.checkTrangThaiLogin_BUS);
-        
         
     }
 
@@ -53,11 +55,16 @@ public class DangNhap_GUI extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         lblImage = new javax.swing.JLabel();
+        pnTitle = new javax.swing.JPanel();
+        lbExit = new javax.swing.JLabel();
+        lbMinimize = new javax.swing.JLabel();
+        lbTitle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ĐĂNG NHẬP QUẢN TRỊ");
         setBackground(new java.awt.Color(102, 163, 222));
         setName("Đăng nhập Admin"); // NOI18N
+        setUndecorated(true);
         setResizable(false);
 
         pnDangNhap.setBackground(new java.awt.Color(102, 163, 222));
@@ -146,38 +153,39 @@ public class DangNhap_GUI extends javax.swing.JFrame {
             .addComponent(jSeparator2)
             .addComponent(jSeparator1)
             .addGroup(pnDangNhapLayout.createSequentialGroup()
-                .addGap(41, 41, 41)
+                .addGap(42, 42, 42)
                 .addGroup(pnDangNhapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(pnDangNhapLayout.createSequentialGroup()
-                        .addComponent(lblMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txfMatKhau))
                     .addGroup(pnDangNhapLayout.createSequentialGroup()
                         .addComponent(lblTenTaiKhoan)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txfTenTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnDangNhapLayout.createSequentialGroup()
-                        .addGap(109, 109, 109)
-                        .addComponent(btnDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 65, Short.MAX_VALUE))
+                        .addComponent(lblMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txfMatKhau)))
+                .addContainerGap(64, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnDangNhapLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnDangNhapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnDangNhapLayout.createSequentialGroup()
-                        .addComponent(lblDangNhap)
+                        .addGroup(pnDangNhapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnDangNhapLayout.createSequentialGroup()
+                                .addComponent(lblImage)
+                                .addGap(92, 92, 92))
+                            .addComponent(lblDangNhap, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(71, 71, 71))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnDangNhapLayout.createSequentialGroup()
-                        .addComponent(lblImage)
-                        .addGap(163, 163, 163))))
+                        .addComponent(btnDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(137, 137, 137))))
         );
         pnDangNhapLayout.setVerticalGroup(
             pnDangNhapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnDangNhapLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(21, 21, 21)
                 .addComponent(lblImage)
                 .addGap(11, 11, 11)
                 .addComponent(lblDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnDangNhapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -188,22 +196,81 @@ public class DangNhap_GUI extends javax.swing.JFrame {
                         .addGap(33, 33, 33)
                         .addComponent(txfMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
+                .addGap(27, 27, 27)
                 .addComponent(btnDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
+        );
+
+        pnTitle.setBackground(new java.awt.Color(102, 102, 102));
+        pnTitle.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                pnTitleMouseDragged(evt);
+            }
+        });
+        pnTitle.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                pnTitleMousePressed(evt);
+            }
+        });
+
+        lbExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-xbox-x-20.png"))); // NOI18N
+        lbExit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbExitMouseClicked(evt);
+            }
+        });
+
+        lbMinimize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-minimize-window-20.png"))); // NOI18N
+        lbMinimize.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbMinimizeMouseClicked(evt);
+            }
+        });
+
+        lbTitle.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lbTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lbTitle.setText("SNEAKER STORE");
+        lbTitle.setMaximumSize(new java.awt.Dimension(20, 20));
+        lbTitle.setMinimumSize(new java.awt.Dimension(20, 20));
+        lbTitle.setPreferredSize(new java.awt.Dimension(20, 20));
+
+        javax.swing.GroupLayout pnTitleLayout = new javax.swing.GroupLayout(pnTitle);
+        pnTitle.setLayout(pnTitleLayout);
+        pnTitleLayout.setHorizontalGroup(
+            pnTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnTitleLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(90, 90, 90)
+                .addComponent(lbMinimize)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbExit)
+                .addContainerGap())
+        );
+        pnTitleLayout.setVerticalGroup(
+            pnTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lbExit, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+            .addComponent(lbMinimize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnTitleLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(lbTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnDangNhap, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnDangNhap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnDangNhap, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(pnTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnDangNhap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -281,9 +348,30 @@ public class DangNhap_GUI extends javax.swing.JFrame {
        }
         
     }//GEN-LAST:event_txfMatKhauMousePressed
+
+    private void lbMinimizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbMinimizeMouseClicked
+        this.setState(JFrame.ICONIFIED);
+    }//GEN-LAST:event_lbMinimizeMouseClicked
+
+    private void lbExitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbExitMouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_lbExitMouseClicked
+
+    private void pnTitleMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnTitleMousePressed
+        mousepX = evt.getX();
+        mousepY = evt.getY();
+    }//GEN-LAST:event_pnTitleMousePressed
+
+    private void pnTitleMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnTitleMouseDragged
+        int toaDoX = evt.getXOnScreen();
+        int toaDoY = evt.getYOnScreen();
+        
+        this.setLocation(toaDoX - mousepX, toaDoY - mousepY);
+    }//GEN-LAST:event_pnTitleMouseDragged
     
     public void Login(){
-        XuLyDatabase_BUS dbBUS = new XuLyDatabase_BUS();
+        ResultSet resultLogin = null;
+        NhanVien_BUS nvBUS = new NhanVien_BUS();
         String tenTaiKhoan = txfTenTaiKhoan.getText();
         String matKhau = txfMatKhau.getText();
 
@@ -297,23 +385,44 @@ public class DangNhap_GUI extends javax.swing.JFrame {
             }
             else{                
                 try{
+                     resultLogin = nvBUS.LoginQuanTri(tenTaiKhoan, matKhau);
                     
-                    dbBUS.LoginQuanTri(tenTaiKhoan, matKhau);
-                    
-                    if (XuLyDatabase_BUS.checkTrangThaiLogin_BUS == 1){
-                        Admin_GUI frmAdmin = new Admin_GUI();
-                        frmAdmin.setVisible(true);
-                        this.setVisible(false);
+                    if (resultLogin.next()){
+                        if (resultLogin.getString("trangThaiNV").equals("Mở")){
+                            hoTenOnline = resultLogin.getString("hoTenNV");
+                            maNVOnline = resultLogin.getInt("maNV");
+                                    
+                            if (resultLogin.getInt("maChucVu") == 1){
+                                
+                                JOptionPane.showMessageDialog(null, "Đăng nhập thành công!"); 
+                                Admin_GUI frmAdmin = new Admin_GUI();
+                                frmAdmin.setVisible(true);
+                                this.setVisible(false);
+                                
+                            }else if (resultLogin.getInt("maChucVu") == 2){
+                                JOptionPane.showMessageDialog(null, "Đăng nhập thành công!"); 
+                                Manager_GUI frmManager = new Manager_GUI();
+                                frmManager.setVisible(true);
+                                this.setVisible(false);
+                            }
+                        }else{
+                            JOptionPane.showMessageDialog(null, "Tài khoản đã bị khóa!"); 
+                        }
+                        
+                        
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Sai thông tin đăng nhập! Vui lòng nhập lại!");
+                        txfTenTaiKhoan.requestFocus();
                     }
-                    
-     
-                    txfTenTaiKhoan.requestFocus();
+                
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
             }
     }
+    
+   
     
     
     /**
@@ -363,11 +472,15 @@ public class DangNhap_GUI extends javax.swing.JFrame {
     private javax.swing.JButton btnDangNhap;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JLabel lbExit;
+    private javax.swing.JLabel lbMinimize;
+    private javax.swing.JLabel lbTitle;
     private javax.swing.JLabel lblDangNhap;
     private javax.swing.JLabel lblImage;
     private javax.swing.JLabel lblMatKhau;
     private javax.swing.JLabel lblTenTaiKhoan;
     private javax.swing.JPanel pnDangNhap;
+    private javax.swing.JPanel pnTitle;
     private javax.swing.JPasswordField txfMatKhau;
     private javax.swing.JTextField txfTenTaiKhoan;
     // End of variables declaration//GEN-END:variables

@@ -5,14 +5,18 @@
             <url>src/GUI/QuanLyNhanVien_GUI.java</url>
             <bookmark id="1">
                 <name/>
-                <line>715</line>
+                <line>879</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/I:/QuanLyBanGiay/src/GUI/QuanLyNhanVien_GUI.java</file>
+            <file>file:/C:/Users/Thanh%20Phong/Documents/QuanLyBanGiay/src/BUS/HoaDon_BUS.java</file>
+            <file>file:/C:/Users/Thanh%20Phong/Documents/QuanLyBanGiay/src/DAO/KhachHang_DAO.java</file>
+            <file>file:/C:/Users/Thanh%20Phong/Documents/QuanLyBanGiay/src/DTO/ChiTietHoaDon_DTO.java</file>
+            <file>file:/C:/Users/Thanh%20Phong/Documents/QuanLyBanGiay/src/DAO/HoaDon_DAO.java</file>
+            <file>file:/C:/Users/Thanh%20Phong/Documents/QuanLyBanGiay/src/GUI/ThongKe_GUI.java</file>
         </group>
     </open-files>
 </project-private>
