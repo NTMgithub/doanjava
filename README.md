@@ -4,7 +4,7 @@ Quản lý bán giày JAVA
 Thành viên:
 - Nguyễn Thương Mến
 - Nguyễn Thế Phong
-- Nguyễn Thanh Phong
+- Trần Thanh Phong
 
 Các vấn đề nhỏ cần sửa:
 - Đường dẫn image
