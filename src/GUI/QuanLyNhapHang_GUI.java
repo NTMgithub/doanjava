@@ -1004,13 +1004,13 @@ public class QuanLyNhapHang_GUI extends javax.swing.JPanel {
         
     }
     
-    private ImageIcon showImageToJLabel(String ImgPath, byte[] anhNV) {
+    private ImageIcon showImageToJLabel(String ImgPath, String anhNV) {
         ImageIcon myImg = null;
         
         if (ImgPath != null){
             myImg = new ImageIcon(ImgPath); //Gán đường dẫn mới (ImgPath) nếu chưa có đường dẫn
         }else{
-            myImg = new ImageIcon(anhNV); //Lấy ảnh row được click
+        	myImg = new ImageIcon(new File("src\\Image\\ProductImages\\").getAbsolutePath() + "\\" + anhNV); //Lấy ảnh row được click
         }
 
         Image img = myImg.getImage();

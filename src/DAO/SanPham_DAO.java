@@ -21,10 +21,14 @@ import GUI.QuanLySanPham_GUI;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
+
+import org.apache.commons.compress.utils.IOUtils;
 
 /**
  *
@@ -60,7 +64,7 @@ public class SanPham_DAO {
                 
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
 
                 resultArray.add(SP_DTO);
@@ -79,6 +83,56 @@ public class SanPham_DAO {
         }
 
         return resultArray;
+    }
+
+    
+    public SanPham_DTO getOneSanPham(int maSP){
+    	 
+
+        try {
+        	
+            String query = "SELECT * FROM tbl_sanpham WHERE maSP = " + maSP +"";
+         
+            
+            xuLyDB = new XuLyDatabase();
+            connection = xuLyDB.openConnection();
+
+            ps = connection.prepareStatement(query);
+            resultSet = ps.executeQuery();
+
+           while (resultSet.next()) {
+        	   SanPham_DTO SP_DTO = new SanPham_DTO();
+               SP_DTO.setMaSP(resultSet.getInt("maSP"));
+               SP_DTO.setMaNCC(resultSet.getInt("maNCC"));
+               SP_DTO.setMaDM(resultSet.getInt("maDM"));
+               SP_DTO.setTenSP(resultSet.getString("tenSP"));
+               SP_DTO.setSizeSP(resultSet.getInt("sizeSP"));
+               SP_DTO.setSoLuongSP(resultSet.getInt("soLuongSP"));
+               
+               SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
+               SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
+               SP_DTO.setAnhSP(resultSet.getString("anhSP"));
+               SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
+               
+               return SP_DTO;
+           }
+            
+                
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } //Dong ket noi
+        finally {
+            try {
+                xuLyDB.closeConnection(connection);
+                ps.close();
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+       
     }
 
     
@@ -106,17 +160,48 @@ public class SanPham_DAO {
             ps.setString(6, SP_DTO.getMieuTaSP());
             ps.setInt(7, SP_DTO.getDonGiaSP());
 
-            InputStream anhSP = new FileInputStream(new File(QuanLySanPham_GUI.ImgPath));
-            ps.setBlob(8, anhSP);
+            //Lưu file ảnh lên thư mục của database
+            try {
+            	
+				FileInputStream inputAnhSP = new FileInputStream(new File(QuanLySanPham_GUI.ImgPath));
+				byte[] arrayInputAnhSP = IOUtils.toByteArray(inputAnhSP);
+				
+				//generate unique name for file output
+				String[] strArray = QuanLySanPham_GUI.ImgPath.split("\\.");
+				String extImage = strArray[strArray.length - 1];
+				String uniqueImageName =  String.valueOf(System.currentTimeMillis()) + "." + extImage;
+			
+				ps.setString(8, uniqueImageName);
+				
+				System.out.println(new File("src\\Image\\ProductImages\\").getAbsolutePath() + "\\" + uniqueImageName);
+				
+				FileOutputStream outputAnhSP = new FileOutputStream(new File("src\\Image\\ProductImages\\").getAbsolutePath() + "\\" + uniqueImageName);
+				
+				outputAnhSP.write(arrayInputAnhSP);
+				
+				outputAnhSP.flush();
+				
+				
+				outputAnhSP.close();
+				inputAnhSP.close();
+		            
+				
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
+            
             
             result = ps.executeUpdate();
            
 
-        } catch (SQLException e) {
+       } catch (SQLException e) {
             e.printStackTrace();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(SanPham_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
         
          //Dong ket noi
         finally {
@@ -132,6 +217,28 @@ public class SanPham_DAO {
         
         
         return result;
+    }
+    
+    public void XoaImageSanPhamSauKhiCapNhat(int maSP) {
+    	
+    	SanPham_DTO spDTO = getOneSanPham(maSP);
+    	
+    	String pathOldImage = new File("src\\Image\\ProductImages\\").getAbsolutePath() + "\\" + spDTO.getAnhSP();
+    	
+    	File file = new File (pathOldImage);
+    	
+    	System.out.println("old url: " + file.getAbsolutePath() + "  " + pathOldImage);
+    	
+    	if (file.exists()) {
+    		if (file.delete()) {
+        		System.out.println("Old image delete successfully!");
+        	}else {
+        		System.out.println("Old image can not delete");
+        	}
+    	}
+    	
+    	
+    	
     }
     
 
@@ -172,6 +279,8 @@ public class SanPham_DAO {
                 }
             } else{ //Có update image
             try{
+            		XoaImageSanPhamSauKhiCapNhat(SP_DTO.getMaSP());
+            	
                     String sql = "UPDATE tbl_sanpham SET maNCC = ?, maDM = ?, tenSP = ?, sizeSP = ?, mieuTaSP = ?, donGiaSP = ?, anhSP = ? WHERE maSP = ?";
                     
                     xuLyDB = new XuLyDatabase();
@@ -183,19 +292,55 @@ public class SanPham_DAO {
                     ps.setInt(4, SP_DTO.getSizeSP());
                     ps.setString(5, SP_DTO.getMieuTaSP());
                     ps.setInt(6, SP_DTO.getDonGiaSP());
+                    
                     //Update ảnh
-                    InputStream anhSP = new FileInputStream(new File(QuanLySanPham_GUI.ImgPath));
-                    ps.setBlob(7, anhSP);
+                  //Lưu file ảnh lên thư mục của database
+                    try {
+                    	
+        				FileInputStream inputAnhSP = new FileInputStream(new File(QuanLySanPham_GUI.ImgPath));
+        				byte[] arrayInputAnhSP = IOUtils.toByteArray(inputAnhSP);
+        				
+        				//generate unique name for file output
+        				String[] strArray = QuanLySanPham_GUI.ImgPath.split("\\.");
+        				String extImage = strArray[strArray.length - 1];
+        				String uniqueImageName =  String.valueOf(System.currentTimeMillis()) + "." + extImage;
+        			
+        				ps.setString(7, uniqueImageName);
+        				
+        				System.out.println(new File("src\\Image\\ProductImages\\").getAbsolutePath() + "\\" + uniqueImageName);
+        				
+        				FileOutputStream outputAnhSP = new FileOutputStream(new File("src\\Image\\ProductImages\\").getAbsolutePath() + "\\" + uniqueImageName);
+        				
+        				outputAnhSP.write(arrayInputAnhSP);
+        				
+        				outputAnhSP.flush();
+        				
+        				
+        				outputAnhSP.close();
+        				inputAnhSP.close();
+        		            
+        				
+        			} catch (FileNotFoundException e) {
+        				// TODO Auto-generated catch block
+        				e.printStackTrace();
+        			} catch (IOException e) {
+        				// TODO Auto-generated catch block
+        				e.printStackTrace();
+        			}
                     
                     ps.setInt(8, SP_DTO.getMaSP());
-
+                    
+                    
+                    
+                    
                     result = ps.executeUpdate(); //executeUpdate trả về số dòng chịu tác động
+                    
+                    
+                    
 
                 }catch (SQLException e){
                     e.printStackTrace();
-                } catch (FileNotFoundException ex) {
-                Logger.getLogger(SanPham_DAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                }
 
                 //Dong ket noi
                 finally{
@@ -321,7 +466,7 @@ public class SanPham_DAO {
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
                 resultArray.add(SP_DTO);
             }
         }catch (SQLException e){
@@ -367,7 +512,7 @@ public class SanPham_DAO {
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
                 resultArray.add(SP_DTO);
                 //}
                 
@@ -413,7 +558,7 @@ public class SanPham_DAO {
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
                 resultArray.add(SP_DTO);
                 //}
                 
@@ -460,7 +605,7 @@ public class SanPham_DAO {
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
                 resultArray.add(SP_DTO);
                 
             }
@@ -506,7 +651,7 @@ public class SanPham_DAO {
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
                 resultArray.add(SP_DTO);
                 
             }
@@ -552,7 +697,7 @@ public class SanPham_DAO {
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
                 resultArray.add(SP_DTO);
                 //}
                 
@@ -600,7 +745,7 @@ public class SanPham_DAO {
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
                 resultArray.add(SP_DTO);
                 
             }

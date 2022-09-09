@@ -92,7 +92,7 @@ public class DanhMuc_DAO {
                 SP_DTO.setTrangThaiSP(resultSet.getString("trangThaiSP"));
                 SP_DTO.setMieuTaSP(resultSet.getString("mieuTaSP"));
                 SP_DTO.setDonGiaSP(resultSet.getInt("donGiaSP"));
-                SP_DTO.setAnhSP(resultSet.getBytes("anhSP"));
+                SP_DTO.setAnhSP(resultSet.getString("anhSP"));
 //                if(SP_DTO.getTrangThaiSP() == "Mở"){
 //                
 //                }

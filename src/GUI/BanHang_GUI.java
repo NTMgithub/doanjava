@@ -21,6 +21,7 @@ import DTO.NhaCungCap_DTO;
 import DTO.SanPham_DTO;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -883,13 +884,13 @@ public class BanHang_GUI extends javax.swing.JPanel {
         
     }
     
-    private ImageIcon showImageToJLabel(String ImgPath, byte[] anhNV) {
+    private ImageIcon showImageToJLabel(String ImgPath, String anhNV) {
         ImageIcon myImg = null;
-        
-        if (ImgPath != null){
+
+        if (ImgPath != null) {
             myImg = new ImageIcon(ImgPath); //Gán đường dẫn mới (ImgPath) nếu chưa có đường dẫn
-        }else{
-            myImg = new ImageIcon(anhNV); //Lấy ảnh row được click
+        } else {
+            myImg = new ImageIcon(new File("src\\Image\\ProductImages\\").getAbsolutePath() + "\\" + anhNV); //Lấy ảnh row được click
         }
 
         Image img = myImg.getImage();

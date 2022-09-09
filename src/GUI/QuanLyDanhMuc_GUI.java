@@ -446,7 +446,7 @@ public class QuanLyDanhMuc_GUI extends javax.swing.JPanel {
             int soLuongSP = SP_DTO.getSoLuongSP();
             String mieuTaSP = SP_DTO.getMieuTaSP();
             int donGia = SP_DTO.getDonGiaSP();
-            byte[] anhSP = SP_DTO.getAnhSP();
+            String anhSP = SP_DTO.getAnhSP();
 
             if (SP_DTO.getTrangThaiSP().equals("Mở")) {
                 Object[] row = {maSP, maNCC, maDanhMuc, tenSP, sizeSP, soLuongSP, mieuTaSP, donGia, anhSP};

@@ -11,8 +11,8 @@ package DTO;
  */
 public class SanPham_DTO {
     private int maSP,maNCC,soLuongSP,maDM,donGiaSP,sizeSP;
-    private String tenSP,mieuTaSP,trangThaiSP;
-    private byte [] anhSP;
+    private String tenSP,mieuTaSP,trangThaiSP, anhSP;
+    
     public SanPham_DTO(){
         this.maSP = 0;
         this.maNCC = 0;
@@ -37,7 +37,7 @@ public class SanPham_DTO {
         this.maDM = SP_DTO.maDM;
         this.anhSP = SP_DTO.anhSP;
     }
-    public SanPham_DTO(int maSP, int maNCC, String tenSP, int sizeSP, int soLuongSP, String mieuTaSP, int donGiaSP, String trangThaiSP, int maDM, byte [] anhSP){
+    public SanPham_DTO(int maSP, int maNCC, String tenSP, int sizeSP, int soLuongSP, String mieuTaSP, int donGiaSP, String trangThaiSP, int maDM, String anhSP){
         this.maSP = maSP;
         this.maNCC = maNCC;
         this.mieuTaSP = mieuTaSP;
@@ -50,11 +50,11 @@ public class SanPham_DTO {
         this.anhSP = anhSP;
     }
 
-    public byte[] getAnhSP() {
+    public String getAnhSP() {
         return anhSP;
     }
 
-    public void setAnhSP(byte[] anhSP) {
+    public void setAnhSP(String anhSP) {
         this.anhSP = anhSP;
     }
 

@@ -18,9 +18,14 @@ import java.awt.Color;
 import java.awt.Image;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -35,6 +40,12 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.exolab.castor.types.Time;
+
+import com.lowagie.text.pdf.codec.Base64.OutputStream;
+
+
+import org.apache.commons.compress.utils.IOUtils;
 
 /**
  *
@@ -712,7 +723,7 @@ public class QuanLySanPham_GUI extends javax.swing.JPanel {
             String mieuTaSP = SP_DTO.getMieuTaSP();
             int donGia = SP_DTO.getDonGiaSP();
             String donGiaStr = String.format("%,d", donGia);
-            byte[] anhSP = SP_DTO.getAnhSP();
+            String anhSP = SP_DTO.getAnhSP();
 
             if (SP_DTO.getTrangThaiSP().equals("Mở")) {
                 Object[] row = {maSP, maNCC, maDanhMuc, tenSP, sizeSP, soLuongSP, mieuTaSP, donGiaStr, anhSP};
@@ -741,18 +752,18 @@ public class QuanLySanPham_GUI extends javax.swing.JPanel {
             int donGia = CongCu.FormatTienStringSangInt(donGiaStr);
             txfDonGia.setText(Integer.toString(donGia));
 
-            lblImageSP.setIcon(this.showImageToJLabel(null, (byte[]) tblSanPham.getValueAt(viTri, 8)));
+            lblImageSP.setIcon(this.showImageToJLabel(null, (String) tblSanPham.getValueAt(viTri, 8)));
         }
 //       }
     } //Show thông tin nhân viên được click lên Input
 
-    private ImageIcon showImageToJLabel(String ImgPath, byte[] anhNV) {
+    private ImageIcon showImageToJLabel(String ImgPath, String anhNV) {
         ImageIcon myImg = null;
 
         if (ImgPath != null) {
             myImg = new ImageIcon(ImgPath); //Gán đường dẫn mới (ImgPath) nếu chưa có đường dẫn
         } else {
-            myImg = new ImageIcon(anhNV); //Lấy ảnh row được click
+            myImg = new ImageIcon(new File("src\\Image\\ProductImages\\").getAbsolutePath() + "\\" + anhNV); //Lấy ảnh row được click
         }
 
         Image img = myImg.getImage();
@@ -912,6 +923,7 @@ public class QuanLySanPham_GUI extends javax.swing.JPanel {
         file.setCurrentDirectory(new File(System.getProperty("user.home"))); //set thư mục mở lên khi nhấn nút chọn ảnh
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("*.images", "jpg", "png", "jpeg");
+        file.setFileFilter(filter);
         file.addChoosableFileFilter(filter); //Lọc đuôi file được phép upload
 
         int result = file.showSaveDialog(null);
@@ -920,6 +932,9 @@ public class QuanLySanPham_GUI extends javax.swing.JPanel {
             String path = fileDaChon.getAbsolutePath(); //Lấy đường dẫn ảnh
             lblImageSP.setIcon(showImageToJLabel(path, null)); //Hiển thị ảnh lên lblNhanVienImage
             ImgPath = path; //Gán đường dẫn vào ImgPath
+            
+            
+            
         } else {
             System.out.println("Chưa chọn file nào!");
         }
@@ -954,7 +969,7 @@ public class QuanLySanPham_GUI extends javax.swing.JPanel {
 
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng muốn xóa!");
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn row muốn xóa!");
         }
 
     }
@@ -964,7 +979,7 @@ public class QuanLySanPham_GUI extends javax.swing.JPanel {
         System.out.println(tblSanPham.getSelectedRow());//Test
 
         if (tblSanPham.getSelectedRow() == -1 || txfMaSanPham.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng muốn sửa!");
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn row muốn sửa trong table!");
         } else if (txfMaSanPham.getText().isEmpty() == true) {
             JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phẩm!");
             txfMaSanPham.requestFocus();
@@ -1087,7 +1102,7 @@ public class QuanLySanPham_GUI extends javax.swing.JPanel {
                 String mieuTaSP = SP_DTO.getMieuTaSP();
                 int donGiaSP = SP_DTO.getDonGiaSP();
                 String donGiaSPStr = String.format("%,d", donGiaSP);
-                byte [] anhSP = SP_DTO.getAnhSP();
+                String anhSP = SP_DTO.getAnhSP();
                 if (SP_DTO.getTrangThaiSP().equals("Mở")){
                     Object[] row = {maSP, maNCC, maDM, tenSP, sizeSP, soLuongSP, mieuTaSP, donGiaSPStr, anhSP};
                     modelNV.addRow(row);
@@ -1254,7 +1269,7 @@ public class QuanLySanPham_GUI extends javax.swing.JPanel {
                 String mieuTaSP = SP_DTO.getMieuTaSP();
                 int donGiaSP = SP_DTO.getDonGiaSP();
                 String donGiaSPStr = String.format("%,d", donGiaSP);
-                byte [] anhSP = SP_DTO.getAnhSP();
+                String anhSP = SP_DTO.getAnhSP();
                 if (SP_DTO.getTrangThaiSP().equals("Mở")){
                     Object[] row = {maSP, maNCC, maDM, tenSP, sizeSP, soLuongSP, mieuTaSP, donGiaSPStr, anhSP};
                     modelNV.addRow(row);
