@@ -7,7 +7,6 @@ Thành viên:
 - Trần Thanh Phong
 
 Các vấn đề nhỏ cần sửa:
-- Đường dẫn image
 - Nên dùng mảng data (ArrayList,...) để lưu giúp phần mềm load nhanh hơn
 
 Các giao diện:
