@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.compress.utils.IOUtils;
 
@@ -46,6 +49,22 @@ public class NhanVien_DAO {
             ResultSet resultLogin = null;
             Connection connection = null;
             
+            //MD5 dehashing start
+            String passwordDehashed = "";
+            MessageDigest md;
+			try {
+				md = MessageDigest.getInstance("MD5");
+				md.update(matKhauNV.getBytes());
+	            byte[] digest = md.digest();
+	            passwordDehashed = DatatypeConverter.printHexBinary(digest);
+	            
+			} catch (NoSuchAlgorithmException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+            //MD5 dehashing end
+            
+            
             try {
                     xuLyDB = new XuLyDatabase();
                     connection = xuLyDB.openConnection();
@@ -53,7 +72,7 @@ public class NhanVien_DAO {
 
                     ps = connection.prepareStatement(query);
                     ps.setString(1, tenTaiKhoanNV);
-                    ps.setString(2, matKhauNV);
+                    ps.setString(2, passwordDehashed);
 
                     resultLogin = ps.executeQuery();
                     
@@ -579,8 +598,25 @@ public class NhanVien_DAO {
     
     public int ThemNhanVien(NhanVien_DTO nhanvienDTO){ 
         int result = 0;
+       
+        
         String query = "INSERT INTO tbl_nhanvien(maNV, maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV, anhNV) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+        
+       
+        //MD5 hashing password
+        String passwordHashed = "";
+        MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("MD5");
+			md.update(nhanvienDTO.getMatKhauNV().getBytes());
+			byte[] digest = md.digest();
+			passwordHashed = DatatypeConverter.printHexBinary(digest);
+			 
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         
        
         
@@ -593,7 +629,7 @@ public class NhanVien_DAO {
             ps.setInt(1, nhanvienDTO.getMaNV());
             ps.setInt(2, nhanvienDTO.getMaChucVu());
             ps.setString(3, nhanvienDTO.getTenTaiKhoanNV());
-            ps.setString(4, nhanvienDTO.getMatKhauNV());
+            ps.setString(4, passwordHashed);
             ps.setString(5, nhanvienDTO.getHoTenNV());
             ps.setString(6, nhanvienDTO.getDiaChiNV());
             ps.setString(7, nhanvienDTO.getSdtNV());
@@ -695,9 +731,25 @@ public class NhanVien_DAO {
     public int CapNhatNV(NhanVien_DTO nhanvienDTO){
         int result = 0;
         
+        //MD5 hashing password
+        String passwordHashed = "";
+        MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("MD5");
+			md.update(nhanvienDTO.getMatKhauNV().getBytes());
+			byte[] digest = md.digest();
+			passwordHashed = DatatypeConverter.printHexBinary(digest);
+			 
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+        
         if (QuanLyNhanVien_GUI.ImgPath == null){ //Nếu không update ảnh
             try{
-                    String queryUpdateNoImage = "UPDATE tbl_nhanvien SET maChucVu= ?, tenTaiKhoanNV= ?, matKhauNV= ?, hoTenNV= ?, diaChiNV= ?,"
+                    String queryUpdateNoImage = "UPDATE tbl_nhanvien SET maChucVu= ?, tenTaiKhoanNV= ?, hoTenNV= ?, diaChiNV= ?,"
                     + " sdtNV= ?, cmndNV= ?, gioiTinhNV= ? WHERE maNV = ?";
                     
                     xuLyDB = new XuLyDatabase();
@@ -707,14 +759,13 @@ public class NhanVien_DAO {
 
                     ps.setInt(1, nhanvienDTO.getMaChucVu());
                     ps.setString(2, nhanvienDTO.getTenTaiKhoanNV());
-                    ps.setString(3, nhanvienDTO.getMatKhauNV());
-                    ps.setString(4, nhanvienDTO.getHoTenNV());
-                    ps.setString(5, nhanvienDTO.getDiaChiNV());
-                    ps.setString(6, nhanvienDTO.getSdtNV());
-                    ps.setString(7, nhanvienDTO.getCmndNV());
-                    ps.setString(8, nhanvienDTO.getGioiTinhNV());
+                    ps.setString(3, nhanvienDTO.getHoTenNV());
+                    ps.setString(4, nhanvienDTO.getDiaChiNV());
+                    ps.setString(5, nhanvienDTO.getSdtNV());
+                    ps.setString(6, nhanvienDTO.getCmndNV());
+                    ps.setString(7, nhanvienDTO.getGioiTinhNV());
 
-                    ps.setInt(9, nhanvienDTO.getMaNV());
+                    ps.setInt(8, nhanvienDTO.getMaNV());
 
                     result = ps.executeUpdate(); //executeUpdate trả về số dòng chịu tác động
 
@@ -737,7 +788,7 @@ public class NhanVien_DAO {
             try{
             		XoaImageSauKhiCapNhat(nhanvienDTO.getMaNV());
             	
-                    String queryUpdateImage = "UPDATE tbl_nhanvien SET maChucVu= ?, tenTaiKhoanNV= ?, matKhauNV= ?, hoTenNV= ?, diaChiNV= ?,"
+                    String queryUpdateImage = "UPDATE tbl_nhanvien SET maChucVu= ?, tenTaiKhoanNV= ?, hoTenNV= ?, diaChiNV= ?,"
                     + " sdtNV= ?, cmndNV= ?, gioiTinhNV= ?, anhNV= ? WHERE maNV = ?";
                     
                     xuLyDB = new XuLyDatabase();
@@ -747,12 +798,11 @@ public class NhanVien_DAO {
 
                     ps.setInt(1, nhanvienDTO.getMaChucVu());
                     ps.setString(2, nhanvienDTO.getTenTaiKhoanNV());
-                    ps.setString(3, nhanvienDTO.getMatKhauNV());
-                    ps.setString(4, nhanvienDTO.getHoTenNV());
-                    ps.setString(5, nhanvienDTO.getDiaChiNV());
-                    ps.setString(6, nhanvienDTO.getSdtNV());
-                    ps.setString(7, nhanvienDTO.getCmndNV());
-                    ps.setString(8, nhanvienDTO.getGioiTinhNV());
+                    ps.setString(3, nhanvienDTO.getHoTenNV());
+                    ps.setString(4, nhanvienDTO.getDiaChiNV());
+                    ps.setString(5, nhanvienDTO.getSdtNV());
+                    ps.setString(6, nhanvienDTO.getCmndNV());
+                    ps.setString(7, nhanvienDTO.getGioiTinhNV());
                   //Lưu file ảnh lên thư mục của database
                     try {
                     	
@@ -764,7 +814,7 @@ public class NhanVien_DAO {
         				String extImage = strArray[strArray.length - 1];
         				String uniqueImageName =  String.valueOf(System.currentTimeMillis()) + "." + extImage;
         			
-        				ps.setString(9, uniqueImageName);
+        				ps.setString(8, uniqueImageName);
         				
         				System.out.println(new File("src\\Image\\NhanVienImages\\").getAbsolutePath() + "\\" + uniqueImageName);
         				
@@ -787,7 +837,7 @@ public class NhanVien_DAO {
         				e.printStackTrace();
         			}
                     
-                    ps.setInt(10, nhanvienDTO.getMaNV());
+                    ps.setInt(9, nhanvienDTO.getMaNV());
 
                     result = ps.executeUpdate(); //executeUpdate trả về số dòng chịu tác động
 

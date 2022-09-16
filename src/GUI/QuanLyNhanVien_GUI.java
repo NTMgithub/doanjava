@@ -20,7 +20,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -31,6 +34,8 @@ import javax.swing.RowFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -816,11 +821,16 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
        txfMaNV.setEnabled(false);
        txfMaNV.setDisabledTextColor(Color.GRAY);
        
+       txfMatKhau.setEnabled(false);
+       txfMatKhau.setDisabledTextColor(Color.GRAY);
+       
 //        try {
 //            nhanvienArr = nhanvienBUS.getAllNhanVien();
 //        } catch (ClassNotFoundException ex) {
 //            Logger.getLogger(QuanLyNhanVien_GUI.class.getName()).log(Level.SEVERE, null, ex);
 //        }
+       
+       	
        
 //       if (nhanvienArr.get(viTri).getTrangThaiNV().equals("Mở") ){ 
         if (viTri != -1){
