@@ -797,7 +797,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
                 String sdtNV = nhanvienDTO.getSdtNV();
                 String cmndNV = nhanvienDTO.getCmndNV();
                 String gioiTinhNV = nhanvienDTO.getGioiTinhNV();
-                byte[] anhNV = nhanvienDTO.getAnhNV();
+                String anhNV = nhanvienDTO.getAnhNV();
                 
                 if ( nhanvienDTO.getTrangThaiNV().equals("Mở") ){
                     Object[] row = {maNV, maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV, anhNV};
@@ -834,7 +834,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
             txfCMND.setText(tblNhanVien.getValueAt(viTri, 7).toString());
             cbbGioiTinh.setSelectedItem(tblNhanVien.getValueAt(viTri, 8).toString());
 
-            lbNhanVienImage.setIcon(this.showImageToJLabel(null, (byte[])tblNhanVien.getValueAt(viTri, 9)));
+            lbNhanVienImage.setIcon(this.showImageToJLabel(null, (String)tblNhanVien.getValueAt(viTri, 9)));
         }
 //       }
     } //Show thông tin nhân viên được click lên Input
@@ -1014,13 +1014,13 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
         
     } //Dùng cho button Chọn ảnh và set ImgPath
     
-    private ImageIcon showImageToJLabel(String ImgPath, byte[] anhNV){
+    private ImageIcon showImageToJLabel(String ImgPath, String anhNV){
         ImageIcon myImg = null;
         
-        if (ImgPath != null){
+        if (ImgPath != null) {
             myImg = new ImageIcon(ImgPath); //Gán đường dẫn mới (ImgPath) nếu chưa có đường dẫn
-        }else{
-            myImg = new ImageIcon(anhNV); //Lấy ảnh row được click
+        } else {
+            myImg = new ImageIcon(new File("src\\Image\\NhanVienImages\\").getAbsolutePath() + "\\" + anhNV); //Lấy ảnh row được click
         }
         
         Image img = myImg.getImage();
@@ -1029,6 +1029,8 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
         ImageIcon image = new ImageIcon(img2);
         return image;
     } //Show hình ảnh lên JLabel
+    
+   
     
     private void KhoaNV(){
         NhanVien_DTO nhanvienDTO = new NhanVien_DTO();
@@ -1210,7 +1212,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
                 String sdtNV = nhanvienDTO.getSdtNV();
                 String cmndNV = nhanvienDTO.getCmndNV();
                 String gioiTinhNV = nhanvienDTO.getGioiTinhNV();
-                byte[] anhNV = nhanvienDTO.getAnhNV();
+                String anhNV = nhanvienDTO.getAnhNV();
                 
                 if (nhanvienDTO.getTrangThaiNV().equals("Mở")){
                     Object[] row = {maNV, maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV, anhNV};
@@ -1380,7 +1382,7 @@ public class QuanLyNhanVien_GUI extends javax.swing.JPanel {
                 String sdtNV = nhanvienDTO.getSdtNV();
                 String cmndNV = nhanvienDTO.getCmndNV();
                 String gioiTinhNV = nhanvienDTO.getGioiTinhNV();
-                byte[] anhNV = nhanvienDTO.getAnhNV();
+                String anhNV = nhanvienDTO.getAnhNV();
                 
                 if (nhanvienDTO.getTrangThaiNV().equals("Mở")){
                     Object[] row = {maNV, maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV, anhNV};

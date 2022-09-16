@@ -22,9 +22,9 @@ public class NhanVien_DTO {
     private String cmndNV;
     private String gioiTinhNV;
     private String trangThaiNV;
-    private byte[] anhNV;
+    private String anhNV;
     
-    public NhanVien_DTO(int maNV, int maChucVu, String tenTaiKhoanNV, String matKhauNV, String hoTenNV, String diaChiNV, String sdtNV, String cmndNV, String gioiTinhNV, String trangThaiNV, byte[] anhNV) {
+    public NhanVien_DTO(int maNV, int maChucVu, String tenTaiKhoanNV, String matKhauNV, String hoTenNV, String diaChiNV, String sdtNV, String cmndNV, String gioiTinhNV, String trangThaiNV, String anhNV) {
         this.maNV = maNV;
         this.maChucVu = maChucVu;
         this.tenTaiKhoanNV= tenTaiKhoanNV;
@@ -132,11 +132,11 @@ public class NhanVien_DTO {
         this.gioiTinhNV = gioiTinhNV;
     }
 
-    public byte[] getAnhNV() {
+    public String getAnhNV() {
         return anhNV;
     }
 
-    public void setAnhNV(byte[] anhNV) {
+    public void setAnhNV(String anhNV) {
         this.anhNV = anhNV;
     }
     

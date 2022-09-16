@@ -8,10 +8,15 @@ package DAO;
 import ConnectDB.XuLyDatabase;
 import DTO.ChucVu_DTO;
 import DTO.NhanVien_DTO;
+import DTO.SanPham_DTO;
 import GUI.QuanLyNhanVien_GUI;
+import GUI.QuanLySanPham_GUI;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+
+import org.apache.commons.compress.utils.IOUtils;
 
 /**
  *
@@ -85,7 +92,7 @@ public class NhanVien_DAO {
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
                 nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
                 
-                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
+                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
                 
 //                if (resultSet.getString("trangThaiNV").equals("Mở")){
                     resultArray.add(nhanvienDTO);
@@ -175,7 +182,7 @@ public class NhanVien_DAO {
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
                 nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
                 
-                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
+                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
                 
 //                if (resultSet.getString("trangThaiNV").equals("Mở")){
                     resultArray.add(nhanvienDTO);
@@ -228,7 +235,7 @@ public class NhanVien_DAO {
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
                 nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
                 
-                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
+                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
                 
 //                if (resultSet.getString("trangThaiNV").equals("Mở")){
                     resultArray.add(nhanvienDTO);
@@ -278,7 +285,7 @@ public class NhanVien_DAO {
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
                 nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
                 
-                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
+                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
                 
 //                if (resultSet.getString("trangThaiNV").equals("Mở")){
                     resultArray.add(nhanvienDTO);
@@ -329,7 +336,7 @@ public class NhanVien_DAO {
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
                 nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
                 
-                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
+                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
                 
 //                if (resultSet.getString("trangThaiNV").equals("Mở")){
                     resultArray.add(nhanvienDTO);
@@ -380,7 +387,7 @@ public class NhanVien_DAO {
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
                 nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
                 
-                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
+                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
                 
 //                if (resultSet.getString("trangThaiNV").equals("Mở")){
                     resultArray.add(nhanvienDTO);
@@ -431,7 +438,7 @@ public class NhanVien_DAO {
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
                 nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
                 
-                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
+                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
                 
 //                if (resultSet.getString("trangThaiNV").equals("Mở")){
                     resultArray.add(nhanvienDTO);
@@ -482,7 +489,7 @@ public class NhanVien_DAO {
                 nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
                 nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
                 
-                nhanvienDTO.setAnhNV(resultSet.getBytes("anhNV"));
+                nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
                 
 //                if (resultSet.getString("trangThaiNV").equals("Mở")){
                     resultArray.add(nhanvienDTO);
@@ -575,8 +582,11 @@ public class NhanVien_DAO {
         String query = "INSERT INTO tbl_nhanvien(maNV, maChucVu, tenTaiKhoanNV, matKhauNV, hoTenNV, diaChiNV, sdtNV, cmndNV, gioiTinhNV, anhNV) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
         
-        try{
-            xuLyDB = new XuLyDatabase();
+       
+        
+        
+        try {
+        	xuLyDB = new XuLyDatabase();
             connection = xuLyDB.openConnection();
             ps = connection.prepareStatement(query);
             
@@ -590,17 +600,50 @@ public class NhanVien_DAO {
             ps.setString(8, nhanvienDTO.getCmndNV());
             ps.setString(9, nhanvienDTO.getGioiTinhNV());
             
+
+            //Lưu file ảnh lên thư mục của database
+            try {
+            	
+				FileInputStream inputAnhSP = new FileInputStream(new File(QuanLyNhanVien_GUI.ImgPath));
+				byte[] arrayInputAnhSP = IOUtils.toByteArray(inputAnhSP);
+				
+				//generate unique name for file output
+				String[] strArray = QuanLyNhanVien_GUI.ImgPath.split("\\.");
+				String extImage = strArray[strArray.length - 1];
+				String uniqueImageName =  String.valueOf(System.currentTimeMillis()) + "." + extImage;
+			
+				ps.setString(10, uniqueImageName);
+				
+				System.out.println(new File("src\\Image\\NhanVienImages\\").getAbsolutePath() + "\\" + uniqueImageName);
+				
+				FileOutputStream outputAnhSP = new FileOutputStream(new File("src\\Image\\NhanVienImages\\").getAbsolutePath() + "\\" + uniqueImageName);
+				
+				outputAnhSP.write(arrayInputAnhSP);
+				
+				outputAnhSP.flush();
+				
+				
+				outputAnhSP.close();
+				inputAnhSP.close();
+		            
+				
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             
-            InputStream AnhNV = new FileInputStream(new File(QuanLyNhanVien_GUI.ImgPath));
-            ps.setBlob(10, AnhNV);
-         
+            
+            
             result = ps.executeUpdate();
-   
-        }catch (SQLException e){
+           
+
+       } catch (SQLException e) {
             e.printStackTrace();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
+        
         
         //Dong ket noi
         finally{
@@ -692,6 +735,8 @@ public class NhanVien_DAO {
         }
         else{ //Có update image
             try{
+            		XoaImageSauKhiCapNhat(nhanvienDTO.getMaNV());
+            	
                     String queryUpdateImage = "UPDATE tbl_nhanvien SET maChucVu= ?, tenTaiKhoanNV= ?, matKhauNV= ?, hoTenNV= ?, diaChiNV= ?,"
                     + " sdtNV= ?, cmndNV= ?, gioiTinhNV= ?, anhNV= ? WHERE maNV = ?";
                     
@@ -708,9 +753,39 @@ public class NhanVien_DAO {
                     ps.setString(6, nhanvienDTO.getSdtNV());
                     ps.setString(7, nhanvienDTO.getCmndNV());
                     ps.setString(8, nhanvienDTO.getGioiTinhNV());
-                    //Update ảnh
-                    InputStream AnhNV = new FileInputStream(new File(QuanLyNhanVien_GUI.ImgPath));
-                    ps.setBlob(9, AnhNV);
+                  //Lưu file ảnh lên thư mục của database
+                    try {
+                    	
+        				FileInputStream inputAnhSP = new FileInputStream(new File(QuanLyNhanVien_GUI.ImgPath));
+        				byte[] arrayInputAnhSP = IOUtils.toByteArray(inputAnhSP);
+        				
+        				//generate unique name for file output
+        				String[] strArray = QuanLyNhanVien_GUI.ImgPath.split("\\.");
+        				String extImage = strArray[strArray.length - 1];
+        				String uniqueImageName =  String.valueOf(System.currentTimeMillis()) + "." + extImage;
+        			
+        				ps.setString(9, uniqueImageName);
+        				
+        				System.out.println(new File("src\\Image\\NhanVienImages\\").getAbsolutePath() + "\\" + uniqueImageName);
+        				
+        				FileOutputStream outputAnhSP = new FileOutputStream(new File("src\\Image\\NhanVienImages\\").getAbsolutePath() + "\\" + uniqueImageName);
+        				
+        				outputAnhSP.write(arrayInputAnhSP);
+        				
+        				outputAnhSP.flush();
+        				
+        				
+        				outputAnhSP.close();
+        				inputAnhSP.close();
+        		            
+        				
+        			} catch (FileNotFoundException e) {
+        				// TODO Auto-generated catch block
+        				e.printStackTrace();
+        			} catch (IOException e) {
+        				// TODO Auto-generated catch block
+        				e.printStackTrace();
+        			}
                     
                     ps.setInt(10, nhanvienDTO.getMaNV());
 
@@ -718,8 +793,6 @@ public class NhanVien_DAO {
 
                 }catch (SQLException e){
                     e.printStackTrace();
-                } catch (FileNotFoundException ex) {
-                Logger.getLogger(NhanVien_DAO.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 //Dong ket noi
@@ -738,5 +811,79 @@ public class NhanVien_DAO {
         
         
     }
+    
+    public void XoaImageSauKhiCapNhat(int maNV) {
+	
+    	NhanVien_DTO nvDTO = getOneNhanVien(maNV);
+    	
+    	String pathOldImage = new File("src\\Image\\NhanVienImages\\").getAbsolutePath() + "\\" + nvDTO.getAnhNV();
+    	
+    	File file = new File (pathOldImage);
+    	
+    	System.out.println("old url: " + file.getAbsolutePath() + "  " + pathOldImage);
+    	
+    	if (file.exists()) {
+    		if (file.delete()) {
+        		System.out.println("Old image delete successfully!");
+        	}else {
+        		System.out.println("Old image can not delete");
+        	}
+    	}
+    	
+    	
+    	
+    }
+    
+    
+    public NhanVien_DTO getOneNhanVien(int maNV){
+   	 
+
+        try {
+        	
+            String query = "SELECT * FROM tbl_nhanvien WHERE maNV = " + maNV +"";
+         
+            
+            xuLyDB = new XuLyDatabase();
+            connection = xuLyDB.openConnection();
+
+            ps = connection.prepareStatement(query);
+            resultSet = ps.executeQuery();
+
+           while (resultSet.next()) {
+        	   NhanVien_DTO nhanvienDTO = new NhanVien_DTO();
+        	   nhanvienDTO.setMaNV(resultSet.getInt("maNV"));
+               nhanvienDTO.setMaChucVu(resultSet.getInt("maChucVu"));
+               nhanvienDTO.setTenTaiKhoanNV(resultSet.getString("tenTaiKhoanNV"));
+               nhanvienDTO.setMatKhauNV(resultSet.getString("matKhauNV"));
+               nhanvienDTO.setHoTenNV(resultSet.getString("hoTenNV"));
+               nhanvienDTO.setDiaChiNV(resultSet.getString("diaChiNV"));
+               nhanvienDTO.setSdtNV(resultSet.getString("sdtNV"));
+               nhanvienDTO.setCmndNV(resultSet.getString("cmndNV"));
+               nhanvienDTO.setGioiTinhNV(resultSet.getString("gioiTinhNV"));
+               nhanvienDTO.setTrangThaiNV(resultSet.getString("trangThaiNV"));
+               nhanvienDTO.setAnhNV(resultSet.getString("anhNV"));
+               
+               
+               return nhanvienDTO;
+           }
+            
+                
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } //Dong ket noi
+        finally {
+            try {
+                xuLyDB.closeConnection(connection);
+                ps.close();
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+       
+    }
+    
     
 }
